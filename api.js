@@ -131,3 +131,36 @@ async function handleSubmit(event) {
 }
  
 form.addEventListener("submit", handleSubmit);
+
+// ---- DELETE: remove a note -----------------------------------------------
+// JSONPlaceholder is a fake API: it never stores notes we create, so a created
+// note (id 101+) does not exist on the server. DELETE /posts/{id} still answers
+// 200 for real and fake ids, so we send the request for every note and remove
+// it from the page only after the server confirms success. If a real backend
+// answers 404 for a note we created in this session, it is already gone, so we
+// treat that 404 as success. Any other error keeps the note and shows a message.
+
+const createdIds = new Set();   // ids of notes created in this session
+ 
+async function deleteNote(id, li, button) {
+  button.disabled = true;
+  setStatus("Deleting note...", "loading");
+  try {
+    const { status } = await request(`${API_URL}/${id}`, { method: "DELETE" });
+    removeFromList(li);
+    setStatus(`Note deleted (status ${status}, id ${id}).`, "success");
+  } catch (err) {
+    if (err.status === 404 && createdIds.has(id)) {
+      removeFromList(li);
+      setStatus(`Note ${id} was only stored locally, so it was removed from the list.`, "success");
+    } else {
+      button.disabled = false;
+      setStatus(friendlyError(err, "deleting the note"), "error");
+    }
+  }
+}
+ 
+function removeFromList(li) {
+  li.remove();
+  if (listEl.children.length === 0) showEmptyState();
+}
