@@ -1,4 +1,4 @@
-// QuickNotes API client (practice backend: JSONPlaceholder)
+// QuickNotes API client 
 const API_URL = "https://jsonplaceholder.typicode.com/posts";
 const MAX_TITLE = 100;
 
@@ -83,3 +83,51 @@ async function loadNotes() {
 }
 
 loadBtn.addEventListener("click", loadNotes);
+
+// ---- POST: create a note -------------------------------------------------
+const form = document.getElementById("note-form");
+const titleInput = document.getElementById("title-input");
+const bodyInput = document.getElementById("body-input");
+const submitBtn = document.getElementById("submit-btn");
+ 
+function validateTitle(title) {
+  if (title.length === 0) return "Please enter a title.";
+  if (title.length > MAX_TITLE) return `The title is too long (${title.length}/${MAX_TITLE} characters).`;
+  return null;
+}
+ 
+async function createNote(title, body) {
+  return request(API_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json; charset=UTF-8" },
+    body: JSON.stringify({ title, body, userId: 1 }),
+  });
+}
+ 
+async function handleSubmit(event) {
+  event.preventDefault();
+  const title = titleInput.value.trim();
+  const body = bodyInput.value.trim();
+  const problem = validateTitle(title);
+  if (problem) {
+    setStatus(problem, "error");
+    titleInput.focus();
+    return;
+  }
+  submitBtn.disabled = true;
+  setStatus("Saving note...", "loading");
+  try {
+    const { data, status } = await createNote(title, body);
+    clearEmptyState();
+    createdIds.add(data.id);
+    listEl.prepend(renderNote({ id: data.id, title, body }));
+    setStatus(`Note created (status ${status}, id ${data.id}).`, "success");
+    form.reset();
+  } catch (err) {
+    setStatus(friendlyError(err, "saving the note"), "error");
+  } finally {
+    submitBtn.disabled = false;
+  }
+}
+ 
+form.addEventListener("submit", handleSubmit);
