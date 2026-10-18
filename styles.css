@@ -1,8 +1,46 @@
 :root { --ink:#1f2933; --muted:#5f6c7b; --line:#d5dbe3; --bg:#f7f8fa; --accent:#1d4ed8;
         --ok-bg:#e6f4ea; --ok-ink:#14532d; --err-bg:#fdecea; --err-ink:#8a1c14; }
 * { box-sizing: border-box; }
-body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.5 system-ui, sans-serif; }
-main { max-width:40rem; margin:0 auto; padding:1.5rem 1rem 3rem; }
+body {
+    margin:0; background:var(--bg);
+    color:var(--ink);
+    font:16px/1.5 system-ui, sans-serif;
+}
+main { 
+  flex: 1;
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+     
+}
+/* ============================================================
+   SECTION CARDS
+   ============================================================ */
+section {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+section h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #0f766e;
+  margin-bottom: 1rem;
+}
+
+#note-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 1rem;
+}
+
 h1 { margin:0 0 1rem; } h2 { font-size:1.15rem; margin:1.5rem 0 .5rem; }
 form { display:grid; gap:.4rem; background:#fff; border:1px solid var(--line); border-radius:6px; padding:1rem; }
 label { font-weight:600; }
